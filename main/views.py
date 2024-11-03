@@ -22,6 +22,7 @@ class CalculatorAPIView(GenericAPIView):
 
         result: Decimal = None
         ## assignment1: 이곳에 과제를 작성해주세요
+        result = Decimal(1_000_000)
         ## end assignment1
 
         # serialization
