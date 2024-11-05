@@ -20,8 +20,21 @@ class CalculatorAPIView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        result: Decimal = None
         ## assignment1: 이곳에 과제를 작성해주세요
+        data = serializer.validated_data
+        a = int(data["input_a"])
+        b = int(data["input_b"])
+        operator = data["operator"]
+        if operator == "+":
+            result = str(a+b)
+        elif operator == "-":
+            result = str(a-b)
+        elif operator == "*":
+            result = str(a*b)
+        elif operator == "/":
+            result = str(int(a/b))
+        else:
+            result = "Invalid operator"
         ## end assignment1
 
         # serialization
