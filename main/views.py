@@ -50,7 +50,7 @@ class StudentAPIView(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, Ge
 
     def patch(self, request, *args, **kwargs):
         #instance 가져오기
-        instance=self.get_Object()
+        instance=self.get_object()
 
         # de-serialization
         serializer = self.get_serializer(instance, data=request.data,partial=True)
@@ -61,7 +61,7 @@ class StudentAPIView(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, Ge
 
         #???
         if getattr(instance,'_prefetched_objects_cache',None):
-            instance.prefetched_ocjects_cache={}
+            instance.prefetched_objects_cache={}
 
         #serialization
         return Response(Serializer.data)
