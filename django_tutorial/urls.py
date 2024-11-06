@@ -15,11 +15,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.contrib import admin
-from django.urls import include, path
+from django.urls import path
+from .views import StudentListAPIView, StudentAPIView  # 필요한 뷰 임포트
 
 urlpatterns = [
-    path("admin/", admin.site.urls),  # Django 관리 사이트
-    path("", include("main.urls")),  # 'main' 앱의 URLConf 포함
+    path("student/", StudentListAPIView.as_view(), name='student-list'),  # 학생 목록 조회 및 추가
+    path("student/<int:pk>/", StudentAPIView.as_view(), name='student-detail'),  # 특정 학생 조회, 수정, 삭제
 ]
 

@@ -8,12 +8,8 @@ class StudentSerializer(serializers.ModelSerializer):
     """
 
     ### assignment2: 이곳에 과제를 작성해주세요
-    from rest_framework import serializers
-    from .models import Student  # Student 모델 임포트
-
-    class StudentSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Student  # 모델 정의
-            fields = '__all__'  # 모든 필드 포함
+    class Meta:
+        model = Student  # Student 모델 지정
+        fields = ['id', 'name', 'student_number', 'primary_major']
 
     ### end assignment2

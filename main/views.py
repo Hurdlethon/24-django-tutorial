@@ -1,8 +1,5 @@
-# Create your views here.
-
-from rest_framework.generics import GenericAPIView
-from .models import Student
-from .serializers import StudentSerializer
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from rest_framework.mixins import (
     ListModelMixin,
     CreateModelMixin,
@@ -10,7 +7,9 @@ from rest_framework.mixins import (
     UpdateModelMixin,
     DestroyModelMixin,
 )
-
+from .models import Student
+from .serializers import StudentSerializer
+from rest_framework.generics import GenericAPIView
 
 class StudentListAPIView(ListModelMixin, CreateModelMixin, GenericAPIView):
     """
