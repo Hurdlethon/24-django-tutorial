@@ -1,6 +1,8 @@
 # Create your views here.
 
 from rest_framework.generics import GenericAPIView
+from .models import Student
+from .serializers import StudentSerializer
 from rest_framework.mixins import (
     ListModelMixin,
     CreateModelMixin,
