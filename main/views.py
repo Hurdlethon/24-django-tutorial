@@ -20,10 +20,20 @@ class StudentListAPIView(ListModelMixin, CreateModelMixin, GenericAPIView):
     serializer_class = StudentSerializer
 
     def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+        return self.list(request, *args, **kwargs)  # GET 요청 처리
+
+
 
     def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
+        # de-serialization
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # CREATE
+        self.perform_create(serializer)
+
+        # serialization
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class StudentAPIView(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, GenericAPIView):
@@ -39,7 +49,23 @@ class StudentAPIView(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, Ge
         return self.retrieve(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
+        #instance 가져오기
+        instance=self.get_Object()
+
+        # de-serialization
+        serializer = self.get_serializer(instance, data=request.data,partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        #UPDATE
+        serializer.save()
+
+        #???
+        if getattr(instance,'_prefetched_objects_cache',None):
+            instance.prefetched_ocjects_cache={}
+
+        #serialization
+        return Response(Serializer.data)
+
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
