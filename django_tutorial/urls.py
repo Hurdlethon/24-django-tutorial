@@ -16,12 +16,10 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
-
-from main.views import StudentListAPIView, StudentAPIView
+from django.urls import include, path
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("student/", StudentListAPIView.as_view()),
-    path("student/<int:pk>", StudentAPIView.as_view()),
+    path("admin/", admin.site.urls),  # Django 관리 사이트
+    path("", include("main.urls")),  # 'main' 앱의 URLConf 포함
 ]
+
