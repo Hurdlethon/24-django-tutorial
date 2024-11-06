@@ -22,10 +22,11 @@ class CalculatorAPIView(GenericAPIView):
 
         result: Decimal = None
         ## assignment1: 이곳에 과제를 작성해주세요
-        instance = serializer.save()
-        op = instance[operator]
-        a = int(instance[input_a])
-        b = int(instance[input_b])
+        # deserializing
+        instance = serializer.validated_data
+        op = instance["operator"]
+        a = int(instance["input_a"])
+        b = int(instance["input_b"])
         if(op == '+'):
             result = a + b
         elif(op =='-'):
