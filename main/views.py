@@ -113,14 +113,13 @@ class StudyParticipationView(
 
     ### assignment3: 이곳에 과제를 작성해주세요
     def get_queryset(self):
-        # 현재 사용자 참여 이력만 조회 가능
+        #현재 사용자 참여 목록만 반환
         return StudyParticipation.objects.filter(user=self.request.user)
 
-    def delete(self, request, *args, **kwargs):
-        instance = self.get_object()
-        # 현재 사용자가 아닌 다른 사용자의 이력 삭제 시 404 반환
-        if instance.user != request.user:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+
+def perform_create(self, serializer):
+    # 요청에서 user 필드가 현재 사용자가 아니면 PermissionDenied 발생
+    if serializer.validated_data.get("user") != self.request.user:
+        raise PermissionDenied()  # 메시지 없이 403 Forbidden 반환
+    serializer.save(user=self.request.user)
     ### end assignment3
