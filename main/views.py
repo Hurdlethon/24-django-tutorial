@@ -17,7 +17,7 @@ from main.serializers import (
     UserSerializer,
 )
 from rest_framework import generics
-from main.models import StudyParticipation  
+from main.models import StudyParticipation
 from main.serializers import StudyParticipationSerializer
 
 class LoginView(GenericAPIView):
@@ -93,6 +93,12 @@ class StudyParticipationListView(
     def perform_create(self, serializer):
         # 현재 사용자 외에는 접근 불가
         serializer.save(user=self.request.user)
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+         return self.create(request, *args, **kwargs)
 
     ### end assignment3
 
