@@ -87,9 +87,17 @@ class StudyParticipationListView(
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        # 현재 사용자만 조회
         return StudyParticipation.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
+        study = serializer.validated_data.get('study')
+
+        # study의 created_by가 현재 사용자인지 확인
+        if study.created_by != self.request.user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        # 현재 사용자가 소유한 스터디인 경우에만 생성
         serializer.save(user=self.request.user)
 
     def get(self, request, *args, **kwargs):
@@ -111,13 +119,17 @@ class StudyParticipationView(
 
     ### assignment3: 이곳에 과제를 작성해주세요
     def get_queryset(self):
-        #현재 사용자 참여 목록만 반환
+        # 현재 사용자만 조회 가능하도록 쿼리셋 제한
         return StudyParticipation.objects.filter(user=self.request.user)
 
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()  # instance는 get_queryset에 따라 현재 사용자 소유만 가져옴
 
-def perform_create(self, serializer):
-    # 요청에서 user 필드가 현재 사용자가 아니면 PermissionDenied 발생
-    if serializer.validated_data.get("user") != self.request.user:
-        raise PermissionDenied()  # 메시지 없이 403 Forbidden 반환
-    serializer.save(user=self.request.user)
+        # instance가 없는 경우 자동으로 404 반환
+        if instance.user != request.user:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # 현재 사용자 소유의 경우에만 삭제 진행
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
     ### end assignment3
