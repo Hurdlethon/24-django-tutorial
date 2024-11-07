@@ -87,11 +87,9 @@ class StudyParticipationListView(
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # 현재 사용자 참여 목록만 반환
         return StudyParticipation.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        # 현재 사용자 외에는 접근 불가
         serializer.save(user=self.request.user)
 
     def get(self, request, *args, **kwargs):
