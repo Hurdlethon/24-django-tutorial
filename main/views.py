@@ -82,6 +82,17 @@ class StudyParticipationListView(
     """
 
     ### assignment3: 이곳에 과제를 작성해주세요
+    serializer_class = StudyParticipationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # 현재 사용자 참여 목록만 반환
+        return StudyParticipation.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        # 현재 사용자 외에는 접근 불가
+        serializer.save(user=self.request.user)
+
     ### end assignment3
 
 
@@ -94,4 +105,12 @@ class StudyParticipationView(
     """
 
     ### assignment3: 이곳에 과제를 작성해주세요
+    def get_queryset(self):
+        # 현재 사용자 참여 이력만 조회 가능
+        return StudyParticipation.objects.filter(user=self.request.user)
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
     ### end assignment3
