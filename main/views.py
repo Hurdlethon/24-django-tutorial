@@ -118,6 +118,9 @@ class StudyParticipationView(
 
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
+        # 현재 사용자가 아닌 다른 사용자의 이력 삭제 시 404 반환
+        if instance.user != request.user:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
     ### end assignment3
