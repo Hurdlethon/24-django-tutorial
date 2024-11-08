@@ -22,6 +22,21 @@ class CalculatorAPIView(GenericAPIView):
 
         result: Decimal = None
         ## assignment1: 이곳에 과제를 작성해주세요
+        validated_data = serializer.validated_data
+        a = Decimal(validated_data["input_a"])
+        b = Decimal(validated_data["input_b"])
+        op = validated_data["operator"]
+        if op == "+" :
+            result = a + b
+        elif op == "-":
+            result = a - b
+        elif op == "*":
+            result = a * b
+        elif op == "/":
+            result = a / b
+        else:
+            result = Decimal(-99999)
+
         ## end assignment1
 
         # serialization
