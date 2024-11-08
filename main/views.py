@@ -1,6 +1,7 @@
 # Create your views here.
 from decimal import Decimal
 
+from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
@@ -22,6 +23,21 @@ class CalculatorAPIView(GenericAPIView):
 
         result: Decimal = None
         ## assignment1: 이곳에 과제를 작성해주세요
+
+        input_a = Decimal(serializer.validated_data['input_a'])
+        input_b = Decimal(serializer.validated_data['input_b'])
+        operator = serializer.validated_data['operator']
+
+        if operator == '+':
+            result = input_a + input_b
+        elif operator == '-':
+            result = input_a - input_b
+        elif operator == '*':
+            result = input_a * input_b
+        elif operator == '/':
+            result = input_a / input_b
+        else:
+            return Response("Invalid operator", status=status.HTTP_400_BAD_REQUEST)
         ## end assignment1
 
         # serialization
