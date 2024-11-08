@@ -17,9 +17,6 @@ class StudentListAPIView(ListModelMixin, CreateModelMixin, GenericAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
 
-    queryset = Student.objects.all()
-    serializer_class = StudentSerializer
-
     def get(self, request):
         return self.list(request)
 
