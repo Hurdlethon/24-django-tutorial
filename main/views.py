@@ -19,10 +19,20 @@ class CalculatorAPIView(GenericAPIView):
         # de-serialization
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
 
         result: Decimal = None
-        ## assignment1: 이곳에 과제를 작성해주세요
-        ## end assignment1
+
+        a = Decimal(data['input_a'])
+        b = Decimal(data['input_b'])
+        if data['operator'] == '+':
+            result = a + b
+        elif data['operator'] == '-':
+            result = a - b
+        elif data['operator'] == '*':
+            result = a * b
+        elif data['operator'] == '/':
+            result = a / b
 
         # serialization
         return Response(CalculatorResponseSerializer({"result": result}).data)
