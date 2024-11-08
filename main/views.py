@@ -1,4 +1,5 @@
 # Create your views here.
+from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import (
@@ -90,11 +91,17 @@ class StudyParticipationListView(
         # 현재 로그인한 사용자만 조회 가능
         return StudyParticipation.objects.filter(user=self.request.user)
 
+    def get(self, request, *args, **kwargs):
+        # GET 요청을 명시적으로 허용합니다.
+        return self.list(request, *args, **kwargs)
+
     def perform_create(self, serializer):
         study = serializer.validated_data.get('study')
+
         # 스터디 소유자가 아닌 경우 403 Forbidden 반환
         if study.created_by != self.request.user:
-            raise PermissionDenied("남의 스터디에 참여할 수 없습니다.")
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
         # 참여 기록 생성
         serializer.save(user=self.request.user)
     ### end assignment3
