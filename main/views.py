@@ -97,7 +97,6 @@ class StudyParticipationListView(
             return Response(status=status.HTTP_403_FORBIDDEN)
         else:
             return self.create(request, *args, **kwargs)
-
     ### end assignment3
 
 
@@ -111,7 +110,8 @@ class StudyParticipationView(
     permission_classes = [IsAuthenticated]
     queryset = StudyParticipation.objects.all()
     serializer_class = StudyParticipationSerializer
-
+    def get_queryset(self):
+        return StudyParticipation.objects.filter(user=self.request.user)
     ### assignment3: 이곳에 과제를 작성해주세요
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
