@@ -1,24 +1,19 @@
 # Create your views here.
-from rest_framework import status
+from django.contrib.auth import login, authenticate
+from rest_framework import status, generics
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import (
-    ListModelMixin,
-    DestroyModelMixin,
-    CreateModelMixin,
-)
+from rest_framework.mixins import ListModelMixin, DestroyModelMixin, CreateModelMixin
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from main.models import Study
-from django.contrib.auth import login, authenticate
+from main.models import Study, StudyParticipation, User
 from main.serializers import (
     StudySerializer,
     LoginSerializer,
     UserSerializer,
+    StudyParticipationSerializer,
 )
-from rest_framework import generics
-from main.serializers import StudyParticipationSerializer
 
 
 class LoginView(GenericAPIView):
