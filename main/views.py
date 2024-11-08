@@ -82,6 +82,22 @@ class StudyParticipationListView(
     """
 
     ### assignment3: 이곳에 과제를 작성해주세요
+    serializer_class = StudyParticipationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # 현재 사용자만 조회 가능하도록 제한
+        return StudyParticipation.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        study = serializer.validated_data.get('study')
+
+        # 스터디 소유자가 현재 사용자인지 확인
+        if study.created_by != self.request.user:
+            raise PermissionDenied("남의 스터디에 참여할 수 없습니다.")
+
+        # 현재 사용자가 소유한 스터디인 경우에만 생성
+        serializer.save(user=self.request.user)
     ### end assignment3
 
 
@@ -94,4 +110,21 @@ class StudyParticipationView(
     """
 
     ### assignment3: 이곳에 과제를 작성해주세요
+    serializer_class = StudyParticipationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # 현재 사용자만 조회 가능하도록 쿼리셋 제한
+        return StudyParticipation.objects.filter(user=self.request.user)
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()  # 현재 사용자 소유의 instance만 가져옴
+
+        # instance가 없는 경우 자동으로 404 반환
+        if instance.user != request.user:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # 현재 사용자 소유의 경우에만 삭제 진행
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
     ### end assignment3
