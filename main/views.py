@@ -17,6 +17,7 @@ from main.serializers import (
     UserSerializer,
 )
 from rest_framework import generics
+from main.serializers import StudyParticipationSerializer
 
 
 class LoginView(GenericAPIView):
