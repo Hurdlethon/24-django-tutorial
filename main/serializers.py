@@ -1,8 +1,7 @@
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
-from main.models import Study, User
-
+from main.models import Study, User,StudyParticipation
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
