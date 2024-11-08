@@ -9,14 +9,16 @@ from rest_framework.mixins import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from main.models import Study
+from main.models import Study, StudyParticipation
 from django.contrib.auth import login, authenticate
 from main.serializers import (
     StudySerializer,
     LoginSerializer,
     UserSerializer,
+    StudyParticipationSerializer,
 )
 from rest_framework import generics
+from rest_framework import status
 
 
 class LoginView(GenericAPIView):
@@ -80,8 +82,21 @@ class StudyParticipationListView(
     GET: 내 스터디 참여 목록. 남의 것이 조회되면 안됩니다.
     POST: 내 스터디 참여 목록 추가. 남의 것을 추가할 수 없습니다(HTTP 403 에러)
     """
+    permission_classes = [IsAuthenticated]
+    queryset = StudyParticipation.objects.all()
+    serializer_class = StudyParticipationSerializer
+
 
     ### assignment3: 이곳에 과제를 작성해주세요
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        if str(request.data["user"]) != str(request.user.id):
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        else:
+            return self.create(request, *args, **kwargs)
     ### end assignment3
 
 
@@ -92,6 +107,12 @@ class StudyParticipationView(
     """
     DELETE: 내 스터디 참여 목록 제거. 남의 것을 제거할 수 없습니다(HTTP 404 에러)
     """
-
+    permission_classes = [IsAuthenticated]
+    queryset = StudyParticipation.objects.all()
+    serializer_class = StudyParticipationSerializer
+    def get_queryset(self):
+        return StudyParticipation.objects.filter(user=self.request.user)
     ### assignment3: 이곳에 과제를 작성해주세요
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
     ### end assignment3
