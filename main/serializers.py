@@ -2,7 +2,7 @@ from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
 from main.models import Study, User
-
+from main.models import StudyParticipation
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -25,8 +25,11 @@ class StudyParticipationSerializer(serializers.ModelSerializer):
     """
     StudyParticipation에 해당하는 Serializer
     """
-
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
     ### assignment3: 이곳에 과제를 작성해주세요
+    class Meta:
+        model = StudyParticipation
+        fields = ["id", "study","user"]
     ### end assignment3
 
 

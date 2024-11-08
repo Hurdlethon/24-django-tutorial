@@ -1,5 +1,6 @@
 # Create your views here.
-from rest_framework.exceptions import AuthenticationFailed
+from rest_framework import status
+from rest_framework.exceptions import AuthenticationFailed, PermissionDenied
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import (
     ListModelMixin,
@@ -17,7 +18,8 @@ from main.serializers import (
     UserSerializer,
 )
 from rest_framework import generics
-
+from main.models import StudyParticipation
+from main.serializers import StudyParticipationSerializer
 
 class LoginView(GenericAPIView):
     authentication_classes = []
@@ -82,6 +84,29 @@ class StudyParticipationListView(
     """
 
     ### assignment3: 이곳에 과제를 작성해주세요
+    serializer_class = StudyParticipationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # 현재 사용자만 조회 가능하도록 제한
+        return StudyParticipation.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        study = serializer.validated_data.get('study')
+
+        # 스터디 소유자가 아닌 경우 403 Forbidden 반환
+        if study.created_by != self.request.user:
+            raise PermissionDenied("남의 스터디에 참여할 수 없습니다.")
+
+        # 현재 사용자가 소유한 스터디인 경우에만 생성
+        serializer.save(user=self.request.user)
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
     ### end assignment3
 
 
@@ -94,4 +119,21 @@ class StudyParticipationView(
     """
 
     ### assignment3: 이곳에 과제를 작성해주세요
+    serializer_class = StudyParticipationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # 현재 사용자만 조회 가능하도록 쿼리셋 제한
+        return StudyParticipation.objects.filter(user=self.request.user)
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()  # 현재 사용자 소유의 instance만 가져옴
+
+        # 삭제하려는 객체가 현재 사용자 소유인지 검증
+        if instance.user != request.user:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # 현재 사용자가 소유한 객체인 경우에만 삭제 진행
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
     ### end assignment3
