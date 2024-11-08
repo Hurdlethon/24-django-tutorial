@@ -8,12 +8,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from main.models import Study, StudyParticipation, User
-from main.serializers import (
-    StudySerializer,
-    LoginSerializer,
-    UserSerializer,
-    StudyParticipationSerializer,
-)
+from main.serializers import StudySerializer, LoginSerializer, UserSerializer, StudyParticipationSerializer
+
 
 
 class LoginView(GenericAPIView):
