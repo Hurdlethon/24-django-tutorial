@@ -9,6 +9,7 @@ from rest_framework.mixins import (
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.status import HTTP_403_FORBIDDEN
 
 from main.models import Study
 from django.contrib.auth import login, authenticate
@@ -97,7 +98,7 @@ class StudyParticipationListView(
 
         # 스터디 소유자가 아닌 경우 403 Forbidden 반환
         if study.created_by != self.request.user:
-            return Response(status=HTTP_403_FORBIDDEN)
+            return Response(status=status.HTTP_403_FORBIDDEN)
 
         # 현재 사용자가 소유한 스터디인 경우에만 생성
         serializer.save(user=self.request.user)
@@ -132,7 +133,7 @@ class StudyParticipationView(
 
         # 삭제하려는 객체가 현재 사용자 소유인지 검증
         if instance.user != request.user:
-            return Response(status=HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         # 현재 사용자가 소유한 객체인 경우에만 삭제 진행
         self.perform_destroy(instance)
