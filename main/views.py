@@ -113,10 +113,6 @@ class StudyParticipationView(
     serializer_class = StudyParticipationSerializer
 
     ### assignment3: 이곳에 과제를 작성해주세요
-    def get_queryset(self):
-        return super().get_queryset().filter(user=self.request.user)
     def delete(self, request, *args, **kwargs):
-        if str(request.data["user"]) != str(request.user.id):
-            return Response(status=status.HTTP_404_NOT_FOUND)
         return self.destroy(request, *args, **kwargs)
     ### end assignment3
