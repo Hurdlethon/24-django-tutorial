@@ -11,5 +11,5 @@ class StudentSerializer(serializers.ModelSerializer):
     ### assignment2: 이곳에 과제를 작성해주세요
     class Meta:
         model = Student
-        fields = ["name", "student_number", "primary_major"]
+        fields = ["id", "name", "student_number", "primary_major"]
     ### end assignment2
