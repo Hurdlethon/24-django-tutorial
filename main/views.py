@@ -33,7 +33,7 @@ class CalculatorAPIView(GenericAPIView):
             result = input_a / input_b
         if (operator == '-'):
             result = input_a - input_b
-        result=str(result)
+
         ## end assignment1
 
         # serialization
