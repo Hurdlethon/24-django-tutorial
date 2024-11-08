@@ -87,17 +87,15 @@ class StudyParticipationListView(
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # 현재 사용자만 조회 가능하도록 제한
+        # 현재 로그인한 사용자만 조회 가능
         return StudyParticipation.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         study = serializer.validated_data.get('study')
-
-        # 스터디 소유자가 현재 사용자인지 확인
+        # 스터디 소유자가 아닌 경우 403 Forbidden 반환
         if study.created_by != self.request.user:
             raise PermissionDenied("남의 스터디에 참여할 수 없습니다.")
-
-        # 현재 사용자가 소유한 스터디인 경우에만 생성
+        # 참여 기록 생성
         serializer.save(user=self.request.user)
     ### end assignment3
 
