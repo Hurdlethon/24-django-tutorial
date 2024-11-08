@@ -1,5 +1,3 @@
-from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.mixins import (
     ListModelMixin,
     CreateModelMixin,
@@ -19,21 +17,14 @@ class StudentListAPIView(ListModelMixin, CreateModelMixin, GenericAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)  # GET 요청 처리
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
 
+    def get(self, request):
+        return self.list(request)
 
-
-    def post(self, request, *args, **kwargs):
-        # de-serialization
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        # CREATE
-        self.perform_create(serializer)
-
-        # serialization
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    def post(self, request):
+        return self.create(request)
 
 
 class StudentAPIView(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, GenericAPIView):
@@ -45,28 +36,14 @@ class StudentAPIView(RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, Ge
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+
+
+    def get(self, request, **kwargs):
+        return self.retrieve(request, **kwargs)
 
     def patch(self, request, *args, **kwargs):
-        #instance 가져오기
-        instance=self.get_object()
+        return self.partial_update(request, **kwargs)
 
-        # de-serialization
-        serializer = self.get_serializer(instance, data=request.data,partial=True)
-        serializer.is_valid(raise_exception=True)
-
-        #UPDATE
-        serializer.save()
-
-        #???
-        if getattr(instance,'_prefetched_objects_cache',None):
-            instance.prefetched_objects_cache={}
-
-        #serialization
-        return Response(Serializer.data)
-
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+    def delete(self, request, **kwargs):
+        return self.destroy(request, **kwargs)
 

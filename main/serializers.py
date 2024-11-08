@@ -7,5 +7,5 @@ class StudentSerializer(serializers.ModelSerializer):
     """
 
     class Meta:
-        model = Student  # 모델 정의
-        fields = ['id', 'name', 'student_number', 'primary_major']  # 필요한 필드 설정
+        model = Student
+        fields = '__all__'  # 필요한 필드 설정
