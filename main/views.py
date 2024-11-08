@@ -83,22 +83,14 @@ class StudyParticipationListView(
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # 현재 로그인한 사용자만 조회 가능
         return StudyParticipation.objects.filter(user=self.request.user)
 
-    def get(self, request, *args, **kwargs):
-        # GET 요청을 명시적으로 허용합니다.
-        return self.list(request, *args, **kwargs)
-
-    def perform_create(self, serializer):
-        study = serializer.validated_data.get('study')
-
-        # 스터디 소유자가 아닌 경우 403 Forbidden 반환
-        if study.created_by != self.request.user:
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
-        # 참여 기록 생성
-        serializer.save(user=self.request.user)
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)  # user를 request.user로 설정하여 저장
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     ### end assignment3
 
 
