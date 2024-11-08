@@ -93,9 +93,10 @@ class StudyParticipationListView(
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
     def post(self, request, *args, **kwargs):
-        if request.data["user"] != request.user.id:
+        if str(request.data["user"]) != str(request.user.id):
             return Response(status=status.HTTP_403_FORBIDDEN)
-        return self.create(request, *args, **kwargs)
+        else:
+            return self.create(request, *args, **kwargs)
 
     ### end assignment3
 
@@ -115,7 +116,7 @@ class StudyParticipationView(
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
     def delete(self, request, *args, **kwargs):
-        if request.data["user"] != request.user.id:
+        if str(request.data["user"]) != str(request.user.id):
             return Response(status=status.HTTP_404_NOT_FOUND)
         return self.destroy(request, *args, **kwargs)
     ### end assignment3

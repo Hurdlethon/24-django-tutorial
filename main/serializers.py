@@ -32,7 +32,7 @@ class StudyParticipationSerializer(serializers.ModelSerializer):
     # )
     class Meta:
         model = StudyParticipation
-        fields = ['id', 'study', 'user']
+        fields = ["id", "study", "user"]
     ### end assignment3
 
 
