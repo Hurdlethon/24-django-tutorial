@@ -9,14 +9,15 @@ from rest_framework.mixins import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from main.models import Study
+from main.models import Study, StudyParticipation
 from django.contrib.auth import login, authenticate
 from main.serializers import (
     StudySerializer,
     LoginSerializer,
     UserSerializer,
+    StudyParticipationSerializer,
 )
-from rest_framework import generics
+from rest_framework import generics, status
 
 
 class LoginView(GenericAPIView):
@@ -81,8 +82,30 @@ class StudyParticipationListView(
     POST: 내 스터디 참여 목록 추가. 남의 것을 추가할 수 없습니다(HTTP 403 에러)
     """
 
-    ### assignment3: 이곳에 과제를 작성해주세요
-    ### end assignment3
+    permission_classes = [IsAuthenticated]
+
+    queryset = StudyParticipation.objects.all()
+    serializer_class = StudyParticipationSerializer
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        if serializer.validated_data["user"] != request.user:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        self.perform_create(serializer)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
 
 class StudyParticipationView(
@@ -93,5 +116,13 @@ class StudyParticipationView(
     DELETE: 내 스터디 참여 목록 제거. 남의 것을 제거할 수 없습니다(HTTP 404 에러)
     """
 
-    ### assignment3: 이곳에 과제를 작성해주세요
-    ### end assignment3
+    permission_classes = [IsAuthenticated]
+
+    queryset = StudyParticipation.objects.all()
+    serializer_class = StudyParticipationSerializer
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
